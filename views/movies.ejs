@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Express Movies</title>
+        <link rel="stylesheet" href="../public/style.css">
+    </head>
+
+    <body>
+        <% include ./partials/header %>
+        <div class="central">
+
+            <h1>Movies</h1>
+            <div class="frenchMovies">
+                <% for(movie of movies) {%>
+                    <div>  <a href="/movies-details/<%= movie._id%>"> <%= movie.movietitle %> <%= movie.movieyear %></a> </div>
+                <% } %>
+            </div>
+            <br>
+            <div>
+                <form action="/movies" method="post">
+                    <label for="movietitle">titre du film</label>
+                    <input type="text" name="title" id="title">
+                    <br>
+                    <label for="movieyear">année du film</label>
+                    <input type="text" name="year" id="year">
+                    <button type="submit">ajouter</button>
+               </form>
+            </div>
+        </div>
+
+        <% include ./partials/footer %>
+        <script>
+            const form = document.querySelector('form');
+            form.addEventListener('submit', addMovie);
+
+            function addMovie(event){
+                event.preventDefault();
+                fetch('/movies', {
+                    method : 'POST',
+                    body : new FormData(form)
+                })
+                .then(checkStatus)
+                .catch(err => console.error('request failed ',err))
+
+            }
+
+            function checkStatus(response) {
+                if(response.status >= 200 && response.status < 300){
+                    let newMovieDiv = document.createElement('div');
+                    const movietitle = document.getElementById('title').value;
+                    const movieyear = document.getElementById('year').value;
+                    newMovieDiv.innerHTML = `${movietitle} ${movieyear}`;
+                    document.querySelector('.frenchMovies').appendChild(newMovieDiv);
+                    form.reset();
+                    location.reload();
+                }
+
+            }
+        </script>
+    </body>
+</html>

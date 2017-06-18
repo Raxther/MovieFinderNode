@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Express Movies</title>
+        <link rel="stylesheet" href="../public/style.css">
+    </head>
+
+    <body>
+        <% include ./partials/header %>
+        <div class="central">
+            <h1>Votre recherche sur The Movies Database</h1>
+            <input type="text" name="term" id="term" placeholder="titre de film">
+            <button id="btnSearch">Chercher</button>
+            <div><br></div>
+            <div id="results">
+            </div>
+        </div>
+        <% include ./partials/footer %>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+            const API_KEY = "a927a30464c302323bc8b290c521f561";
+            const term = document.querySelector('#term');
+            const searchBtn = document.querySelector('#btnSearch');
+            btnSearch.addEventListener('click', search);
+
+            let resultsDiv = document.querySelector('#results');
+            function search(){
+                const query = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${term.value}&language=fr-FR`;
+                axios.get(query)
+                    .then(res => displayResults(res.data.results))
+            }
+            function displayResults(results){
+                resultsDiv.innerHTML = '';
+                for(let result of results){
+                    let movieDiv = document.createElement('div');
+                    movieDiv.innerHTML = result.title;
+                    resultsDiv.appendChild(movieDiv);
+                }
+            }
+
+        </script>
+            
+    </body>
+</html>
